@@ -8,6 +8,7 @@ ENV LOGS_PATH $PROJECT_PATH/logs
 
 RUN apt-get update && apt-get install -y \
 	nginx \
+	nano \
 	python \
 	python-dev \
 	python-setuptools \
@@ -17,8 +18,7 @@ RUN easy_install pip
 RUN pip install uwsgi
 RUN pip install gunicorn
 
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-COPY django_nginx.conf /etc/nginx/sites-available/default
+COPY django_nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR $PROJECT_PATH
 COPY requirements.txt $PROJECT_PATH
@@ -26,7 +26,6 @@ COPY requirements.txt $PROJECT_PATH
 RUN pip install -r requirements.txt
 
 RUN mkdir $LOGS_PATH
-VOLUME ["$LOGS_PATH"]
 
 COPY . $PROJECT_PATH
 
@@ -35,4 +34,5 @@ EXPOSE 80
 # just create a project for test
 RUN django-admin.py startproject $PROJECT_NAME $PROJECT_PATH
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
