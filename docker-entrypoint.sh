@@ -8,5 +8,5 @@ gunicorn $PROJECT_NAME.wsgi:application \
 	--workers 5 \
 	--log-level=info \
 	--log-file=/tmp/gunicorn.log \
-	--access-logfile=$LOGS_PATH/acces.log \
+	--access-logfile=/tmp/acces.log \
 	"$@"
